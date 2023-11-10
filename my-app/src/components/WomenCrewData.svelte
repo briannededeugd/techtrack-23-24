@@ -45,14 +45,18 @@
 				});
 
 				// Calculate the overall percentage for the entire quarter
-				var overallPercentageWomen = (totalWomenCount / totalCrewMembers) * 100;
+				var percentageWomen = Number(
+					(totalWomenCount / totalCrewMembers) * 100
+				);
 
 				// Log the overall result with quarter number
 				console.log(
-					`Female crew members in Quarter ${quarterNumber}: ${totalWomenCount} (${Number(
-						overallPercentageWomen.toFixed(2)
+					`Female crew members in Quarter ${quarterNumber}: ${totalWomenCount} (${percentageWomen.toFixed(
+						2
 					)}%)`
 				);
+
+				return percentageWomen; // to give it to the visualization as a parameter
 			}
 
 			// Call the function for each quarter
@@ -60,12 +64,63 @@
 			calculateOverallPercentage(data, 1945, 1960, 2);
 			calculateOverallPercentage(data, 1960, 1985, 3);
 			calculateOverallPercentage(data, 1985, 2020, 4);
+
+			// Define quarters
+			const quarters = [
+				{ startYear: 1920, endYear: 1945 },
+				{ startYear: 1945, endYear: 1960 },
+				{ startYear: 1960, endYear: 1985 },
+				{ startYear: 1985, endYear: 2020 },
+			];
+
+			// TEKENEN VAN SVG VISUALISATIE
+
+			quarters.forEach((quarter, index) => {
+				const svg = d3.select("#chart");
+
+				const percentageWomen = calculateOverallPercentage(
+					data,
+					quarter.startYear,
+					quarter.endYear,
+					index + 1
+				);
+
+				const bubble = svg
+					.append("circle")
+					.attr("r", percentageWomen * 10)
+					.attr("class", "bubble")
+					.attr("transform", `translate(${index * 200}, 150)`);
+
+				// bubble.append("circle").attr("r", 50);
+
+				const femaleIconCount = (percentageWomen / 100) * 10;
+				for (let i = 0; i < femaleIconCount; i++) {
+					bubble
+						.append("image")
+						.attr("class", "image")
+						.attr("xlink:href", "/female-icon.svg")
+						.attr("x", -20 + i * 10)
+						.attr("y", -10)
+						.attr("width", 20)
+						.attr("height", 20);
+				}
+
+				const maleIconCount = 10 - femaleIconCount;
+				for (let i = 0; i < maleIconCount; i++) {
+					bubble
+						.append("image")
+						.attr("class", "image")
+						.attr("xlink:href", "/img/female-icon.svg")
+						.attr("x", -20 + femaleIconCount * 10 + i * 10)
+						.attr("y", -10)
+						.attr("width", 20)
+						.attr("height", 20);
+				}
+			});
 		} catch (err) {
 			console.error(err);
 		}
 	});
 </script>
 
-<svg width="800" height="80">
-	<g id="wrapper" transform="translate(40, 40)" />
-</svg>
+<svg id="chart" width="800" height="400" />
