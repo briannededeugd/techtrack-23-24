@@ -10,57 +10,62 @@
 			const response = await fetch("/movies.json");
 			data = await response.json();
 
-			// Group the movies by 25-year intervals
-			const groupedData = d3.groups(
+			function convertYearsToNumbers() {
+				const years = data.map((movie) => parseInt(movie.year, 10));
+				return years;
+			}
+
+			convertYearsToNumbers();
+
+			// Define a function to calculate overall percentage of women in the crew for a quarter
+			function calculateOverallPercentage(
 				data,
-				(d) => Math.floor((d.year - 1800) / 25) * 25
-			);
+				startYear,
+				endYear,
+				quarterNumber
+			) {
+				var quarter = data.filter((movie) => {
+					return movie.year >= startYear && movie.year <= endYear;
+				});
 
-			// Calculate the count of "1"s in crew_gender
-			const bubbleData = groupedData.map(([key, values]) => ({
-				year: key,
-				count: d3.sum(
-					values,
-					(d) => d.crew_gender.filter((g) => g === 1).length
-				),
-			}));
+				// Initialize variables to keep track of the total counts
+				var totalWomenCount = 0;
+				var totalCrewMembers = 0;
 
-			// Create the bubble chart
-			const width = 800;
-			const height = 400;
+				// Calculate counts for each movie and accumulate the totals
+				quarter.forEach((movie) => {
+					var womenCrew = JSON.parse(movie.crew_gender);
 
-			const svg = d3
-				.select("el")
-				.append("svg")
-				.attr("width", width)
-				.attr("height", height);
+					// Count women in the crew for this movie
+					var womenCount = womenCrew.filter((gender) => gender === 1).length;
 
-			const bubble = d3.pack(bubbleData).size([width, height]).padding(1.5);
+					// Accumulate the counts
+					totalWomenCount += womenCount;
+					totalCrewMembers += womenCrew.length;
+				});
 
-			const nodes = d3.hierarchy({ children: bubbleData }).sum((d) => d.count);
+				// Calculate the overall percentage for the entire quarter
+				var overallPercentageWomen = (totalWomenCount / totalCrewMembers) * 100;
 
-			const node = svg
-				.selectAll(".node")
-				.data(bubble(nodes).descendants())
-				.enter()
-				.append("g")
-				.attr("class", "node")
-				.attr("transform", (d) => `translate(${d.x},${d.y})`);
+				// Log the overall result with quarter number
+				console.log(
+					`Female crew members in Quarter ${quarterNumber}: ${totalWomenCount} (${Number(
+						overallPercentageWomen.toFixed(2)
+					)}%)`
+				);
+			}
 
-			node
-				.append("circle")
-				.attr("r", (d) => d.r)
-				.style("fill", "steelblue");
-
-			node
-				.append("text")
-				.text((d) => d.data.year)
-				.attr("dy", "0.3em")
-				.style("fill", "white");
-		} catch (error) {
-			console.error("Error loading data:", error);
+			// Call the function for each quarter
+			calculateOverallPercentage(data, 1920, 1945, 1);
+			calculateOverallPercentage(data, 1945, 1960, 2);
+			calculateOverallPercentage(data, 1960, 1985, 3);
+			calculateOverallPercentage(data, 1985, 2020, 4);
+		} catch (err) {
+			console.error(err);
 		}
 	});
 </script>
 
-<div class="chart" bind:this={el} />
+<svg width="800" height="80">
+	<g id="wrapper" transform="translate(40, 40)" />
+</svg>
