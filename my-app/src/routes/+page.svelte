@@ -139,7 +139,7 @@
 		margin: 0 auto;
 		padding: 0 20vw;
 		scroll-snap-align: center;
-		height: 60vh;
+		height: max-content;
 		width: 80vw;
 	}
 

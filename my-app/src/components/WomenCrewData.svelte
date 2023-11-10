@@ -87,35 +87,21 @@
 
 				const bubble = svg
 					.append("circle")
-					.attr("r", percentageWomen * 10)
+					.data("quarters")
+					.attr("r", percentageWomen * 8)
 					.attr("class", "bubble")
 					.attr("transform", `translate(${index * 200}, 150)`);
 
-				// bubble.append("circle").attr("r", 50);
+				// x-axis met quarters of jaartallen ervan?
+				const pointScale = d3
+					.scalePoint()
+					.domain([].concat(...quarters.map((d) => [d.startYear, d.endYear])))
+					.range([0, 700]);
 
-				const femaleIconCount = (percentageWomen / 100) * 10;
-				for (let i = 0; i < femaleIconCount; i++) {
-					bubble
-						.append("image")
-						.attr("class", "image")
-						.attr("xlink:href", "/female-icon.svg")
-						.attr("x", -20 + i * 10)
-						.attr("y", -10)
-						.attr("width", 20)
-						.attr("height", 20);
-				}
+				//Voeg een as toe met de dagen van de week (afgekort)
+				const axisBottom = d3.axisBottom(pointScale);
 
-				const maleIconCount = 10 - femaleIconCount;
-				for (let i = 0; i < maleIconCount; i++) {
-					bubble
-						.append("image")
-						.attr("class", "image")
-						.attr("xlink:href", "/img/female-icon.svg")
-						.attr("x", -20 + femaleIconCount * 10 + i * 10)
-						.attr("y", -10)
-						.attr("width", 20)
-						.attr("height", 20);
-				}
+				d3.select("#axis1").call(axisBottom);
 			});
 		} catch (err) {
 			console.error(err);
@@ -123,4 +109,6 @@
 	});
 </script>
 
-<svg id="chart" width="800" height="400" />
+<svg id="chart" width="800" height="300">
+	<g id="axis1" transform="translate(50, 250)" />
+</svg>
