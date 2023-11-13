@@ -75,15 +75,33 @@
 
 			// TEKENEN VAN SVG VISUALISATIE
 
+			// Define an array to store percentageWomen for each quarter
+			const percentageWomenArray = [];
+
 			quarters.forEach((quarter, index) => {
 				const svg = d3.select("#chart");
 
+				// Calculate percentageWomen for each quarter
 				const percentageWomen = calculateOverallPercentage(
 					data,
 					quarter.startYear,
 					quarter.endYear,
 					index + 1
 				);
+
+				// Push the result into the array
+				percentageWomenArray.push(percentageWomen);
+
+				// x-axis with quarters and their startyear and endyear
+				const pointScale = d3
+					.scalePoint()
+					.domain(quarters.map((d) => [d.startYear, d.endYear]).flat())
+					.range([0, 700]);
+
+				// Add axis with the years
+				const axisBottom = d3.axisBottom(pointScale);
+
+				d3.select("#axis").call(axisBottom);
 
 				const gradient = svg
 					.append("defs")
@@ -101,28 +119,22 @@
 
 				gradient
 					.append("stop")
-					.attr("offset", `${percentageWomen * 100}%`)
-					.style("stop-color", "pink");
+					.attr("offset", `${percentageWomenArray[index] * 100}%`)
+					.style("stop-color", "#febaa9");
 
-				const bubble = svg
-					.append("circle")
-					.data("quarters")
-					.attr("r", percentageWomen * 8)
+				// Draw circles based on the percentageWomen and x position
+				d3.select("#scale")
+					.selectAll("circle")
+					.data(percentageWomenArray) // Use the entire array
+					.join("circle")
+					.attr("r", (d) => d * 8) // Use the value from the array
 					.attr("class", "bubble")
-					.attr("fill", `url(#gradient${index})`)
-					.attr("transform", `translate(${index * 200}, 150)`);
-
-				// x-axis met quarters of jaartallen ervan?
-				const pointScale = d3
-					.scalePoint()
-					.domain([].concat(...quarters.map((d) => [d.startYear, d.endYear])))
-					.range([0, 700]);
-
-				//Voeg een as toe met de dagen van de week (afgekort)
-				const axisBottom = d3.axisBottom(pointScale);
-
-				d3.select("#axis1").call(axisBottom);
+					.attr("cx", (d, i) => pointScale(quarters[i].startYear) + d * 8)
+					.attr("fill", `url(#gradient${index})`);
 			});
+
+			// Now, percentageWomenArray contains the percentageWomen for each quarter
+			console.log(percentageWomenArray);
 		} catch (err) {
 			console.error(err);
 		}
@@ -130,5 +142,6 @@
 </script>
 
 <svg id="chart" width="800" height="300">
-	<g id="axis1" transform="translate(50, 250)" />
+	<g id="scale" transform="translate(50, 125)" />
+	<g id="axis" transform="translate(50, 250)" />
 </svg>
