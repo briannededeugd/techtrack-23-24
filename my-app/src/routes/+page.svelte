@@ -6,6 +6,7 @@
 	import WomenCrewData from "../components/WomenCrewData.svelte";
 
 	import PreviousButton from "../components/PreviousButton.svelte";
+	import isFirstSlide from "../components/PreviousButton.svelte";
 	import NextButton from "../components/NextButton.svelte";
 	import HomeButton from "../components/HomeButton.svelte";
 

@@ -85,11 +85,31 @@
 					index + 1
 				);
 
+				const gradient = svg
+					.append("defs")
+					.append("linearGradient")
+					.attr("id", `gradient${index}`)
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "100%")
+					.attr("y2", "100%");
+
+				gradient
+					.append("stop")
+					.attr("offset", "0%")
+					.style("stop-color", "#99c1cc");
+
+				gradient
+					.append("stop")
+					.attr("offset", `${percentageWomen * 100}%`)
+					.style("stop-color", "pink");
+
 				const bubble = svg
 					.append("circle")
 					.data("quarters")
 					.attr("r", percentageWomen * 8)
 					.attr("class", "bubble")
+					.attr("fill", `url(#gradient${index})`)
 					.attr("transform", `translate(${index * 200}, 150)`);
 
 				// x-axis met quarters of jaartallen ervan?
