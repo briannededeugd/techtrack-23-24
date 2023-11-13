@@ -73,7 +73,7 @@
 				{ startYear: 1985, endYear: 2020 },
 			];
 
-			// TEKENEN VAN SVG VISUALISATIE
+			// DRAWING SVG VISUALIZATION WITH CODE (D3)
 
 			// Define an array to store percentageWomen for each quarter
 			const percentageWomenArray = [];
@@ -92,7 +92,7 @@
 				// Push the result into the array
 				percentageWomenArray.push(percentageWomen);
 
-				// x-axis with quarters and their startyear and endyear
+				// x-axis with quarters and their start- and endyear
 				const pointScale = d3
 					.scalePoint()
 					.domain(quarters.map((d) => [d.startYear, d.endYear]).flat())
