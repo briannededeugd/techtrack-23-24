@@ -1,9 +1,16 @@
 <script>
 	import { onMount, afterUpdate } from "svelte";
 	import Test from "../components/Test.svelte";
+
+	// PAGES
 	import Introduction from "../components/Introduction.svelte";
 	import WomenCrew from "../components/WomenCrew.svelte";
+	import WomenOscars from "../components/WomenOscars.svelte";
+	import Conclusion from "../components/Conclusion.svelte";
+
+	// DATA
 	import WomenCrewData from "../components/WomenCrewData.svelte";
+	import WomenOscarsData from "../components/WomenOscarsData.svelte";
 
 	import PreviousButton from "../components/PreviousButton.svelte";
 	import isFirstSlide from "../components/PreviousButton.svelte";
@@ -48,37 +55,45 @@
 		<section class="slider-wrapper">
 			<section id="slider">
 				<section id="slide-1">
-					<Introduction />
-					<div class="container">
-						<PreviousButton
-							isFirstSlide={currentSlide === 1}
-							onClick={prevSlide}
-						/>
-						<NextButton onClick={nextSlide} />
-					</div>
+					<section class="slide-content">
+						<Introduction />
+						<div class="container">
+							<PreviousButton
+								isFirstSlide={currentSlide === 1}
+								onClick={prevSlide}
+							/>
+							<NextButton onClick={nextSlide} />
+						</div>
+					</section>
 				</section>
 				<section id="slide-2">
-					<WomenCrew />
-					<WomenCrewData />
-					<div class="container">
-						<PreviousButton onClick={prevSlide} />
-						<NextButton onClick={nextSlide} />
-					</div>
+					<section class="slide-content">
+						<WomenCrew />
+						<WomenCrewData />
+						<div class="container">
+							<PreviousButton onClick={prevSlide} />
+							<NextButton onClick={nextSlide} />
+						</div>
+					</section>
 				</section>
 				<section id="slide-3">
-					<Introduction />
-					<div class="container">
-						<PreviousButton onClick={prevSlide} />
-						<NextButton onClick={nextSlide} />
-					</div>
+					<section class="slide-content">
+						<WomenOscars />
+						<WomenOscarsData />
+						<div class="container">
+							<PreviousButton onClick={prevSlide} />
+							<NextButton onClick={nextSlide} />
+						</div>
+					</section>
 				</section>
 				<section id="slide-4">
-					<Introduction />
-					<Test />
-					<div class="container">
-						<PreviousButton onClick={prevSlide} />
-						<HomeButton onClick={nextSlide} />
-					</div>
+					<section class="slide-content">
+						<Conclusion />
+						<div class="container">
+							<PreviousButton onClick={prevSlide} />
+							<HomeButton onClick={nextSlide} />
+						</div>
+					</section>
 				</section>
 			</section>
 		</section>
@@ -109,6 +124,22 @@
 		width: 100vw;
 	}
 
+	.slide-content {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		border-radius: 16px;
+		padding: 5vh 5vw;
+		height: 80%;
+
+		background: rgba(255, 255, 255, 0.19);
+		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+		border: 1px solid rgba(255, 255, 255, 0.5);
+		backdrop-filter: blur(6.4px);
+	}
+
 	.slider-wrapper {
 		position: absolute;
 		display: block;
@@ -122,7 +153,7 @@
 	}
 
 	#slider {
-		background-image: url("./img/illustratedbg.png");
+		background-image: url("./img/bgtest.png");
 		background-size: cover;
 		background-attachment: scroll;
 		display: flex;

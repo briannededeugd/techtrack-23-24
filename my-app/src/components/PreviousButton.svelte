@@ -15,7 +15,7 @@
 	:root {
 		--bg: #f3f8fa;
 		--white: #fff;
-		--buttonbg: #f39977;
+		--buttonbg: #121212;
 		transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
 	}
 

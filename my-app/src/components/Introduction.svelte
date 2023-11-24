@@ -1,12 +1,40 @@
-<section>
-    <h1>Female Representation in Cinema</h1>
-    <h3>By Brianne de Deugd for the minor Information Design, Amsterdam University of Applied Sciences</h3>
-    <p>Have you ever heard of the Bechdel Test? It's also known by its longer name, 'The Bechdel-Wallace Test',
-        and measures the representation of women in pieces of fiction. The test poses the question, <em>Does this work
-        feature at least two women who are having a conversation about something other than a man?</em> This test has
-        altered the manner in which countless people watch movies, and how they rate them. And it has prompted further questions,
-        such as <em>What percentage of Oscar-winning people were women?</em></p>
-    
-    <p>Today, we will explore the answers to these questions in a visual manner, in order to acquaint ourselves with the numbers our women make up in this large industry.
-        How about you join us?</p>
+<section class="entirepage">
+	<section>
+		<h1>
+			F<span>e</span>male R<span>e</span>presentati<span>o</span>n
+			<br />in Cin<span>e</span>m<span>a</span>.
+		</h1>
+		<h3>
+			By Brianne de Deugd for the minor Information Design, <br />
+			Amsterdam University of Applied Sciences
+		</h3>
+	</section>
+	<section>
+		<p>
+			Have you ever heard of the Bechdel Test? This test measures the
+			representation of women in pieces of fiction by posing the question, <em
+				>Does this work feature at least two women who are having a conversation
+				about something other than a man?</em>
+
+            But when it comes to women in film, there are more interesting questions. Let's ask them and find the answers.
+		</p>
+	</section>
 </section>
+
+<style>
+	.entirepage {
+		display: flex;
+		flex-direction: row;
+		gap: 4em;
+		max-width: 100%;
+		/* padding: 0 20vw; */
+	}
+	.entirepage > section:first-of-type {
+		max-width: 60%;
+		padding-right: 4em;
+	}
+
+	.entirepage > section:nth-of-type(2) {
+		max-width: 35%;
+	}
+</style>

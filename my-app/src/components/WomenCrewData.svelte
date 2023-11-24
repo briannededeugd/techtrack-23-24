@@ -124,16 +124,28 @@
 
 				// Draw circles based on the percentageWomen and x position
 				d3.select("#scale")
-					.selectAll("circle")
+					.selectAll("g")
 					.data(percentageWomenArray) // Use the entire array
-					.join("circle")
-					.attr("r", (d) => d * 8) // Use the value from the array
-					.attr("class", "bubble")
-					.attr("cx", (d, i) => pointScale(quarters[i].startYear) + d * 8)
-					.attr("fill", `url(#gradient${index})`)
-					.style("cursor", "pointer")
-					.on("mouseover", handleMouseOver)
-					.on("mouseout", handleMouseOut);
+					.join("g")
+					.attr("class", "bubble-group")
+					.each(function (d, i) {
+						const group = d3.select(this);
+
+						// Remove existing elements within the group
+						group.selectAll("*").remove();
+
+						// Append a single circle element to the group
+						group
+							.append("circle")
+							.attr("r", d * 8) // Use the value from the array
+							.attr("class", "bubble")
+							.attr("cx", pointScale(quarters[i].startYear) + d * 8)
+							.attr("fill", `url(#gradient${index})`)
+							.style("cursor", "pointer")
+							.style("z-index", 1)
+							.on("mouseover", handleMouseOver)
+							.on("mouseout", handleMouseOut);
+					});
 
 				let tooltip = d3
 					.select("#tooltip")
@@ -142,7 +154,7 @@
 					.attr("class", "tooltip")
 					.style("background-color", "white")
 					.style("border", "solid")
-					.style("border-width", "2px")
+					.style("border-width", "1px")
 					.style("border-radius", "5px")
 					.style("padding", "5px")
 					.style("width", "max-content")
@@ -154,16 +166,14 @@
 
 					tooltip
 						.style("visibility", "visible")
-						.style("top", event.clientY + "px")
-						.style("left", event.clientX + window.innerWidth + "px");
+						.style("top", event.clientY - 100 + "px")
+						.style("left", event.clientX - 275 + "px");
 
 					const tooltipContent = d3.select("#tooltipcontent");
 
 					// Set the tooltip content based on the data
 					tooltipContent.text(
-						`Percentage of women behind the scenes in this quarter: ${d.toFixed(
-							2
-						)}%`
+						`Percentage of women behind the scenes: ${d.toFixed(2)}%`
 					);
 
 					console.log(
@@ -177,6 +187,10 @@
 				function handleMouseOut(event, d) {
 					const circle = d3.select(event.currentTarget);
 					circle.transition().attr("r", d * 8); // Restore the original radius on mouseout
+
+					const image = d3.select(".circle-image"); // Use the class to select the image
+
+					image.style("opacity", 0);
 
 					tooltip.style("visibility", "hidden");
 
@@ -200,10 +214,3 @@
 <div id="tooltip">
 	<span id="tooltipcontent" />
 </div>
-
-<style>
-	circle {
-		transition: r 0.3s ease; /* Define the transition for the 'r' property */
-		cursor: pointer; /* Change the cursor on hover */
-	}
-</style>
