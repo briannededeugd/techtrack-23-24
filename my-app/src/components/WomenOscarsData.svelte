@@ -94,6 +94,11 @@
 
 		const barWidth = pointScale.step() / 4;
 
+		let maleNomineeAccumulator = 0;
+		let maleWinnerAccumulator = 0;
+		let femaleNomineeAccumulator = 0;
+		let femaleWinnerAccumulator = 0;
+
 		// Male Nominees and Winners stacked
 		svg
 			.selectAll(".maleBars")
@@ -101,8 +106,8 @@
 			.enter()
 			.append("rect")
 			.attr("class", "maleBars")
-			.attr("x", (d) => pointScale(d.quarter.startYear) - barWidth / 2)
-			.attr("y", (d) => yScale(d.maleWinners))
+			.attr("x", (d) => pointScale(d.quarter.startYear))
+			.attr("y", (d) => yScale(maleWinnerAccumulator + d.maleWinners))
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.maleWinners))
 			.style("fill", colorScale("maleWinners"));
@@ -113,11 +118,16 @@
 			.enter()
 			.append("rect")
 			.attr("class", "maleBarsNominees")
-			.attr("x", (d) => pointScale(d.quarter.startYear) - barWidth / 2)
-			.attr("y", (d) => yScale(d.maleWinners + d.maleNominees))
+			.attr("x", (d) => pointScale(d.quarter.startYear))
+			.attr("y", (d) =>
+				yScale(maleWinnerAccumulator + d.maleWinners + d.maleNominees)
+			)
 			.attr("width", barWidth)
-			.attr("height", (d) => height - yScale(d.maleWinners + d.maleNominees))
-			.style("fill", colorScale("maleNominees"));
+			.attr("height", (d) => height - yScale(d.maleNominees))
+			.style("fill", colorScale("maleNominees"))
+			.each(function (d) {
+				maleNomineeAccumulator += d.maleNominees;
+			});
 
 		// Female Nominees and Winners stacked
 		svg
@@ -126,8 +136,8 @@
 			.enter()
 			.append("rect")
 			.attr("class", "femaleBars")
-			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth / 2)
-			.attr("y", (d) => yScale(d.femaleWinners))
+			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth)
+			.attr("y", (d) => yScale(femaleWinnerAccumulator + d.femaleWinners))
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.femaleWinners))
 			.style("fill", colorScale("femaleWinners"));
@@ -138,14 +148,16 @@
 			.enter()
 			.append("rect")
 			.attr("class", "femaleBarsNominees")
-			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth / 2)
-			.attr("y", (d) => yScale(d.femaleWinners + d.femaleNominees))
-			.attr("width", barWidth)
-			.attr(
-				"height",
-				(d) => height - yScale(d.femaleWinners + d.femaleNominees)
+			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth)
+			.attr("y", (d) =>
+				yScale(femaleWinnerAccumulator + d.femaleWinners + d.femaleNominees)
 			)
-			.style("fill", colorScale("femaleNominees"));
+			.attr("width", barWidth)
+			.attr("height", (d) => height - yScale(d.femaleNominees))
+			.style("fill", colorScale("femaleNominees"))
+			.each(function (d) {
+				femaleNomineeAccumulator += d.femaleNominees;
+			});
 
 		svg
 			.append("g")
