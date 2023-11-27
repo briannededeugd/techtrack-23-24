@@ -199,7 +199,7 @@
 
 	.progress-bar {
 		height: 0.5rem;
-		width: 80%;
+		width: 100%;
 		background: rgba(255, 255, 255, 0.19);
 		border: solid 0.5px black;
 		border-radius: 8px;
