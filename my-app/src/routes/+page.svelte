@@ -157,6 +157,8 @@
 		width: 100vw;
 		scroll-snap-align: center !important;
 		scroll-snap-type: x mandatory !important;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 
 	#slider {
@@ -171,6 +173,8 @@
 		scrollbar-width: none;
 		height: 100vh;
 		width: 400vw;
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 
 	#slider > section {
@@ -211,5 +215,10 @@
 		height: 100%;
 		background: linear-gradient(90deg, #99c1cc, #d39080);
 		transition: all 0.6s ease-in-out;
+	}
+
+	.slider-wrapper::-webkit-scrollbar,
+	#slider::-webkit-scrollbar {
+		display: none;
 	}
 </style>
