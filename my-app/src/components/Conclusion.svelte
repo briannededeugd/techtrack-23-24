@@ -6,14 +6,11 @@
 	</section>
 	<section>
 		<p>
-			Have you ever heard of the Bechdel Test? This test measures the
-			representation of women in pieces of fiction by posing the question, <em
-				>Does this work feature at least two women who are having a conversation
-				about something other than a man?</em
-			>
-
-			But when it comes to women in film, there are more interesting questions.
-			Let's ask them and find the answers.
+			As we've seen in the data, the contribution of women has significantly
+			increased in the last 100 years, but women haven't been entirely invisible
+			in the twentieth century film world. Though they weren't winning Oscars at
+			the time, they've always been present at the writer's table and behind the
+			camera.
 		</p>
 	</section>
 </section>

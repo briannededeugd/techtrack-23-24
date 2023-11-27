@@ -166,7 +166,7 @@
 
 					tooltip
 						.style("visibility", "visible")
-						.style("top", event.clientY - 100 + "px")
+						.style("top", event.clientY - 75 + "px")
 						.style("left", event.clientX - 275 + "px");
 
 					const tooltipContent = d3.select("#tooltipcontent");

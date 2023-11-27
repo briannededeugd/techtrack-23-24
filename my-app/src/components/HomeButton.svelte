@@ -88,7 +88,7 @@
 		transition: all 0.25s; /* Apply transition to all properties */
 		position: relative;
 		margin: 0;
-		width: 3rem;
+		width: 4.5rem;
 		height: 3rem;
 		background: var(--buttonbg);
 		border-radius: 1.625rem;

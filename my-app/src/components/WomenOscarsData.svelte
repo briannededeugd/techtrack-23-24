@@ -51,6 +51,9 @@
 	}
 
 	function createBarChart() {
+		const tooltip = d3.select("#tooltip");
+		const tooltipContent = d3.select("#tooltipcontent");
+
 		const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 		const width = 700 - margin.left - margin.right;
 		const height = 300 - margin.top - margin.bottom;
@@ -110,7 +113,13 @@
 			.attr("y", (d) => yScale(maleWinnerAccumulator + d.maleWinners))
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.maleWinners))
-			.style("fill", colorScale("maleWinners"));
+			.style("fill", colorScale("maleWinners"))
+			.on("mouseover", function (event, d) {
+				showTooltip(
+					`Male nominees this quarter: ${d.maleNominees}<br>Male winners this quarter: ${d.maleWinners}`
+				);
+			})
+			.on("mouseout", hideTooltip);
 
 		svg
 			.selectAll(".maleBarsNominees")
@@ -125,9 +134,12 @@
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.maleNominees))
 			.style("fill", colorScale("maleNominees"))
-			.each(function (d) {
-				maleNomineeAccumulator += d.maleNominees;
-			});
+			.on("mouseover", function (event, d) {
+				showTooltip(
+					`Male nominees this quarter: ${d.maleNominees}<br>Male winners this quarter: ${d.maleWinners}`
+				);
+			})
+			.on("mouseout", hideTooltip);
 
 		// Female Nominees and Winners stacked
 		svg
@@ -140,7 +152,13 @@
 			.attr("y", (d) => yScale(femaleWinnerAccumulator + d.femaleWinners))
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.femaleWinners))
-			.style("fill", colorScale("femaleWinners"));
+			.style("fill", colorScale("femaleWinners"))
+			.on("mouseover", function (event, d) {
+				showTooltip(
+					`Female nominees this quarter: ${d.femaleNominees}<br>Female winners this quarter: ${d.femaleWinners}`
+				);
+			})
+			.on("mouseout", hideTooltip);
 
 		svg
 			.selectAll(".femaleBarsNominees")
@@ -155,9 +173,21 @@
 			.attr("width", barWidth)
 			.attr("height", (d) => height - yScale(d.femaleNominees))
 			.style("fill", colorScale("femaleNominees"))
-			.each(function (d) {
-				femaleNomineeAccumulator += d.femaleNominees;
-			});
+			.on("mouseover", function (event, d) {
+				showTooltip(
+					`Female nominees this quarter: ${d.femaleNominees}<br>Female winners this quarter: ${d.femaleWinners}`
+				);
+			})
+			.on("mouseout", hideTooltip);
+
+		function showTooltip(content) {
+			tooltip.transition().duration(200).style("opacity", 0.9);
+			tooltipContent.html(content);
+		}
+
+		function hideTooltip() {
+			tooltip.transition().duration(200).style("opacity", 0);
+		}
 
 		svg
 			.append("g")
@@ -223,7 +253,7 @@
 </div>
 
 <style>
-	rect {
+	/* rect {
 		transition: height 0.8s, y 0.8s;
-	}
+	} */
 </style>

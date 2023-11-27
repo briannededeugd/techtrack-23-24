@@ -1,6 +1,6 @@
 <script>
-	import { onMount, afterUpdate } from "svelte";
-	import Test from "../components/Test.svelte";
+	import { onMount, afterUpdate, onDestroy } from "svelte";
+	import * as d3 from "d3";
 
 	// PAGES
 	import Introduction from "../components/Introduction.svelte";
@@ -12,38 +12,68 @@
 	import WomenCrewData from "../components/WomenCrewData.svelte";
 	import WomenOscarsData from "../components/WomenOscarsData.svelte";
 
-	import PreviousButton from "../components/PreviousButton.svelte";
-	import isFirstSlide from "../components/PreviousButton.svelte";
-	import NextButton from "../components/NextButton.svelte";
 	import HomeButton from "../components/HomeButton.svelte";
+	import PreviousButton from "../components/PreviousButton.svelte";
+	import NextButton from "../components/NextButton.svelte";
 
-	let src = "/img/female.svg";
+	// let src = "/img/female.svg";
 	let currentSlide = 1;
+	let progress = 0;
 
 	function updateHash(slideNumber) {
 		window.location.hash = `slide-${slideNumber}`;
 	}
 
 	function nextSlide() {
-		console.log("Next Slide");
 		const nextSlide = document.getElementById(`slide-${currentSlide + 1}`);
 		if (nextSlide) {
 			currentSlide += 1;
 			updateHash(currentSlide);
+			updateProgress();
 		} else {
 			currentSlide = 1;
 			updateHash(currentSlide);
+			updateProgress();
 		}
 	}
 
 	function prevSlide() {
-		console.log("Previous Slide");
 		const prevSlide = document.getElementById(`slide-${currentSlide - 1}`);
 		if (prevSlide) {
 			currentSlide -= 1;
 			updateHash(currentSlide);
+			updateProgress();
 		}
 	}
+
+	function updateProgress() {
+		const totalSlides = 4;
+		progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+	}
+
+	afterUpdate(() => {
+		updateProgress();
+	});
+
+	onMount(() => {
+		function handleScroll() {
+			const totalSlides = 4;
+			const slider = d3.select("#slider");
+			let scrollPosition = slider.node().scrollLeft;
+			console.log("THE SCROLLPOSITION IS", scrollPosition);
+
+			// Use clientWidth to get the total width of the slider
+			let slideWidth = slider.node().clientWidth / totalSlides;
+
+			// Calculate the active slide based on the scroll position
+			let currentSlide = Math.floor(scrollPosition / slideWidth) + 1;
+			let progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
+			console.log("HANDLESCROLL SAYS CURRENTSLIDE IS", currentSlide);
+		}
+
+		const slider = d3.select("#slider");
+		slider.on("scroll", handleScroll);
+	});
 </script>
 
 <head>
@@ -57,60 +87,38 @@
 				<section id="slide-1">
 					<section class="slide-content">
 						<Introduction />
-						<div class="container">
-							<PreviousButton
-								isFirstSlide={currentSlide === 1}
-								onClick={prevSlide}
-							/>
-							<NextButton onClick={nextSlide} />
-						</div>
 					</section>
 				</section>
 				<section id="slide-2">
 					<section class="slide-content">
 						<WomenCrew />
 						<WomenCrewData />
-						<div class="container">
-							<PreviousButton onClick={prevSlide} />
-							<NextButton onClick={nextSlide} />
-						</div>
 					</section>
 				</section>
 				<section id="slide-3">
 					<section class="slide-content">
 						<WomenOscars />
 						<WomenOscarsData />
-						<div class="container">
-							<PreviousButton onClick={prevSlide} />
-							<NextButton onClick={nextSlide} />
-						</div>
 					</section>
 				</section>
 				<section id="slide-4">
 					<section class="slide-content">
 						<Conclusion />
-						<div class="container">
-							<PreviousButton onClick={prevSlide} />
-							<HomeButton onClick={nextSlide} />
-						</div>
 					</section>
 				</section>
 			</section>
 		</section>
 
 		<div class="slider-nav">
-			<a href="#slide-1" class="nav-link">
-				<img {src} alt="female icon" />
-			</a>
-			<a href="#slide-2" class="nav-link">
-				<img {src} alt="female icon" />
-			</a>
-			<a href="#slide-3" class="nav-link">
-				<img {src} alt="female icon" />
-			</a>
-			<a href="#slide-4" class="nav-link">
-				<img {src} alt="female icon" />
-			</a>
+			<PreviousButton onClick={prevSlide} />
+			<section class="progress-bar">
+				<div class="progress" style="width: {progress}%" />
+			</section>
+			{#if currentSlide === 4}
+				<HomeButton onClick={nextSlide} />
+			{:else}
+				<NextButton onClick={nextSlide} />
+			{/if}
 		</div>
 	</section>
 </main>
@@ -119,6 +127,7 @@
 	* {
 		scroll-behavior: smooth !important;
 	}
+
 	main {
 		height: 100%;
 		width: 100vw;
@@ -129,12 +138,10 @@
 		flex-direction: column;
 		align-items: center;
 		justify-content: center;
-
 		border-radius: 16px;
 		padding: 5vh 5vw;
 		height: 80%;
-
-		background: rgba(255, 255, 255, 0.19);
+		background: rgba(255, 255, 255, 0.75);
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 		border: 1px solid rgba(255, 255, 255, 0.5);
 		backdrop-filter: blur(6.4px);
@@ -153,7 +160,7 @@
 	}
 
 	#slider {
-		background-image: url("./img/bgtest.png");
+		background-image: url("./img/moviestarsbg.jpeg");
 		background-size: cover;
 		background-attachment: scroll;
 		display: flex;
@@ -180,27 +187,24 @@
 		bottom: 5%;
 		left: 50%;
 		transform: translateX(-50%);
-
-		background: rgba(255, 255, 255, 0.19);
-		border-radius: 16px;
-		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-		backdrop-filter: blur(6.4px);
-		-webkit-backdrop-filter: blur(6.4px);
-		border: 1px solid rgba(255, 255, 255, 0.29);
-		padding: 0.625rem;
-	}
-
-	.slider-nav a {
-		text-decoration: none;
-	}
-
-	.nav-link {
-		transition: background-color 0.3s ease, transform 0.3s ease;
-	}
-
-	.container {
 		display: flex;
-		justify-content: space-between;
-		align-self: flex-end;
+		gap: 8vw;
+		align-items: center;
+		width: 45vw;
+	}
+
+	.progress-bar {
+		height: 0.5rem;
+		width: 80%;
+		background: rgba(255, 255, 255, 0.19);
+		border-radius: 8px;
+		overflow: hidden;
+		margin-right: 0.5rem;
+	}
+
+	.progress {
+		height: 100%;
+		background: linear-gradient(90deg, #4caf50, #ffeb3b);
+		transition: all 0.6s ease-in-out;
 	}
 </style>
