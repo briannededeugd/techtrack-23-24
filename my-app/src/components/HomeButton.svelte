@@ -47,6 +47,8 @@
 		padding: 0;
 		font-size: inherit;
 		font-family: inherit;
+		margin-left: auto;
+		justify-self: end;
 	}
 
 	.icon {
@@ -88,7 +90,7 @@
 		transition: all 0.25s; /* Apply transition to all properties */
 		position: relative;
 		margin: 0;
-		width: 4.5rem;
+		width: 3rem;
 		height: 3rem;
 		background: var(--buttonbg);
 		border-radius: 1.625rem;

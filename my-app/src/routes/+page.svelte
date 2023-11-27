@@ -187,8 +187,12 @@
 		bottom: 5%;
 		left: 50%;
 		transform: translateX(-50%);
-		display: flex;
-		gap: 8vw;
+		display: grid;
+		grid-template-columns: 2fr 4fr 2fr;
+		grid-template-rows: 1fr;
+		grid-column-gap: 0px;
+		grid-row-gap: 0px;
+
 		align-items: center;
 		width: 45vw;
 	}
@@ -197,6 +201,7 @@
 		height: 0.5rem;
 		width: 80%;
 		background: rgba(255, 255, 255, 0.19);
+		border: solid 0.5px black;
 		border-radius: 8px;
 		overflow: hidden;
 		margin-right: 0.5rem;
@@ -204,7 +209,7 @@
 
 	.progress {
 		height: 100%;
-		background: linear-gradient(90deg, #4caf50, #ffeb3b);
+		background: linear-gradient(90deg, #99c1cc, #d39080);
 		transition: all 0.6s ease-in-out;
 	}
 </style>
