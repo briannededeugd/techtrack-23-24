@@ -7,7 +7,7 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch("/movies.json");
+			const response = await fetch("/simplified_movies.json");
 			data = await response.json();
 
 			function convertYearsToNumbers() {
