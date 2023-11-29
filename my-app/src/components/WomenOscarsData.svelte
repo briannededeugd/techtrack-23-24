@@ -283,13 +283,16 @@
 <div>
 	<div>
 		{#each categories as category}
+			<!-- Iterate over the categories array, assign 'category' to each item that's being iterated over -->
 			<label>
+				<!-- value becomes the category in question, the group of radio buttons is binded to selectedCategory, so that when one is clicked it updates accordingly -->
 				<input
 					type="radio"
 					bind:group={selectedCategory}
 					value={category}
 					on:change={filterData}
 				/>
+				<!-- on:change means that when another radio button is selected, the data gets filtered again -->
 				{category}
 			</label>
 		{/each}
@@ -297,13 +300,3 @@
 
 	<div id="chart-container" />
 </div>
-
-<div id="tooltip">
-	<span id="tooltipcontent" />
-</div>
-
-<style>
-	#tooltip {
-		z-index: 9999 !important;
-	}
-</style>
