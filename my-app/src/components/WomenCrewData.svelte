@@ -110,26 +110,6 @@
 				const axisBottom = d3.axisBottom(pointScale);
 				d3.select("#axis").call(axisBottom);
 
-				// Create a gradient dependent on the amount of women in the quarter
-				const gradient = svg
-					.append("defs")
-					.append("linearGradient")
-					.attr("id", `gradient${index}`)
-					.attr("x1", "0%")
-					.attr("y1", "0%")
-					.attr("x2", "100%")
-					.attr("y2", "100%");
-
-				gradient
-					.append("stop")
-					.attr("offset", "0%")
-					.style("stop-color", "#99c1cc"); // blue
-
-				gradient
-					.append("stop")
-					.attr("offset", `${percentageWomenArray[index] * 100}%`)
-					.style("stop-color", "#febaa9"); // pibk
-
 				// Draw circles based on the percentageWomen and x position
 				d3.select("#scale")
 					.selectAll("g")
@@ -148,7 +128,7 @@
 							.attr("r", d * 8) // Use the value from the array
 							.attr("class", "bubble")
 							.attr("cx", pointScale(quarters[i].startYear) + d * 8)
-							.attr("fill", `url(#gradient${index})`)
+							.attr("fill", "#cbdde8")
 							.style("cursor", "pointer")
 							.style("z-index", 1)
 							.on("mouseover", handleMouseOver)
@@ -172,7 +152,10 @@
 				// Have tooltip show up when an element is being hovered, with the relevant data being displayed
 				function handleMouseOver(event, d) {
 					const circle = d3.select(event.currentTarget);
-					circle.transition().attr("r", d * 10); // Increase the radius on hover
+					circle
+						.transition()
+						.attr("r", d * 10)
+						.style("fill", "#fc33a8"); // Increase the radius on hover
 
 					tooltip
 						.style("visibility", "visible")
@@ -197,7 +180,10 @@
 				// Have tooltip disappear when the user is no longer hovering
 				function handleMouseOut(event, d) {
 					const circle = d3.select(event.currentTarget);
-					circle.transition().attr("r", d * 8); // Restore the original radius on mouseout
+					circle
+						.transition()
+						.attr("r", d * 8)
+						.style("fill", "#cbdde8"); // Restore the original radius on mouseout
 
 					tooltip.style("visibility", "hidden");
 
