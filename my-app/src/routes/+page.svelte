@@ -116,6 +116,13 @@
 <main>
 	<section class="content">
 		<section class="slider-wrapper">
+			<p>
+				FEMALE REPRESENTATION IN CINEMA FEMALE REPRESENTATION IN CINEMA FEMALE
+				REPRESENTATION IN CINEMA FEMALE REPRESENTATION IN CINEMA FEMALE
+				REPRESENTATION IN CINEMA FEMALE REPRESENTATION IN CINEMA FEMALE
+				REPRESENTATION IN CINEMA FEMALE REPRESENTATION IN CINEMA FEMALE
+				REPRESENTATION IN CINEMA
+			</p>
 			<section id="slider">
 				<section id="slide-1">
 					<section class="slide-content">
@@ -201,6 +208,13 @@
 		scroll-snap-type: x mandatory !important;
 		-ms-overflow-style: none; /* IE and Edge */
 		scrollbar-width: none; /* Firefox */
+	}
+
+	.slider-wrapper p {
+		position: fixed;
+		top: 2em;
+		text-wrap: nowrap;
+		background: #fc33a8;
 	}
 
 	#slider {
