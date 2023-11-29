@@ -129,7 +129,9 @@
 		</section>
 
 		<div class="slider-nav">
-			<PreviousButton onClick={prevSlide} />
+			{#if currentSlide > 1}
+				<PreviousButton onClick={prevSlide} />
+			{/if}
 			<section class="progress-bar">
 				<div class="progress" style="width: {progress}%" />
 			</section>
