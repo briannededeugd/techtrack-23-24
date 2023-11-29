@@ -213,7 +213,9 @@
 	.slider-wrapper p {
 		position: fixed;
 		top: 2em;
-		text-wrap: nowrap;
+		max-width: 100vw;
+		overflow: hidden;
+		white-space: nowrap;
 		background: #fc33a8;
 	}
 
