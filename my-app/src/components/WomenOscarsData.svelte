@@ -118,7 +118,7 @@
 				"femaleNominees",
 				"femaleWinners",
 			])
-			.range(["#cbdde8", "#99c1cc", "#febaa9", "#f39977"]); // light-blue to darker-pink
+			.range(["#cbdde8", "#99c1cc", "#fd9bd4", "#fc33a8"]); // light-blue to hot-pink
 
 		////////////////////
 		// BARS (STACKED) //
@@ -151,16 +151,7 @@
 			.attr("width", barWidth)
 			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.maleNominees))
-			.style("fill", colorScale("maleNominees"))
-			.on("mouseover", function (event, d) {
-				showTooltip(
-					event,
-					`Quarter: ${d.quarter.startYear}-${d.quarter.endYear}<br>
-					Male nominees: ${d.maleNominees}<br>
-					Male winners: ${d.maleWinners}`
-				);
-			})
-			.on("mouseout", hideTooltip);
+			.style("fill", colorScale("maleNominees"));
 
 		// Female Nominees and Winners stacked
 		svg
@@ -187,51 +178,7 @@
 			.attr("width", barWidth)
 			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.femaleNominees))
-			.style("fill", colorScale("femaleNominees"))
-			.on("mouseover", function (event, d) {
-				showTooltip(
-					event,
-					`Quarter: ${d.quarter.startYear}-${d.quarter.endYear}<br>
-					Female nominees: ${d.femaleNominees}<br>
-					Female winners: ${d.femaleWinners}`
-				);
-			})
-			.on("mouseout", hideTooltip);
-
-		/////////////////////////////////////
-		// SHOW AND HIDE TOOLTIP FUNCTIONS //
-		/////////////////////////////////////
-
-		// Create the defaultstate of the tooltip
-		let tooltip = d3
-			.select("#tooltip")
-			.style("position", "absolute")
-			.attr("class", "tooltip")
-			.style("background-color", "white")
-			.style("border", "solid")
-			.style("border-width", "1px")
-			.style("border-radius", "5px")
-			.style("padding", "5px")
-			.style("width", "max-content")
-			.style("visibility", "hidden");
-
-		tooltip.classed("global-tooltip", true);
-		const tooltipContent = d3.select("#tooltipcontent");
-
-		function showTooltip(event, content) {
-			tooltip
-				.style("visibility", "visible")
-				.style("top", event.clientY - 75 + "px")
-				.style("left", event.clientX + 675 + "px")
-				.style("z-index", 9999)
-				.style("width", "max-content");
-
-			tooltipContent.text(content);
-		}
-
-		function hideTooltip() {
-			tooltip.style("visibility", "hidden");
-		}
+			.style("fill", colorScale("femaleNominees"));
 
 		svg
 			.append("g")
@@ -239,6 +186,61 @@
 			.call(d3.axisBottom(pointScale));
 
 		svg.append("g").call(d3.axisLeft(yScale));
+
+		////////////////
+		// BAR VALUES //
+		////////////////
+		svg
+			.selectAll(".barValues")
+			.data(filteredData)
+			.enter()
+			.append("text")
+			.attr("class", "barValues")
+			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth / 2)
+			.attr("y", (d) => yScale(d.maleWinners) - 5) // Adjust the y-position for better visibility
+			.style("text-anchor", "middle")
+			.text((d) => d.maleWinners)
+			.style("fill", "black")
+			.style("font-size", "10px");
+
+		svg
+			.selectAll(".barValuesNominees")
+			.data(filteredData)
+			.enter()
+			.append("text")
+			.attr("class", "barValuesNominees")
+			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth / 2)
+			.attr("y", (d) => yScale(d.maleWinners + d.maleNominees) - 5) // Adjust the y-position for better visibility
+			.style("text-anchor", "middle")
+			.text((d) => d.maleNominees)
+			.style("fill", "black")
+			.style("font-size", "10px");
+
+		svg
+			.selectAll(".barValuesFemale")
+			.data(filteredData)
+			.enter()
+			.append("text")
+			.attr("class", "barValuesFemale")
+			.attr("x", (d) => pointScale(d.quarter.startYear) + (barWidth / 2 + 70))
+			.attr("y", (d) => yScale(d.femaleWinners) - 2)
+			.style("text-anchor", "middle")
+			.text((d) => (d.femaleWinners !== 0 ? d.femaleWinners : ""))
+			.style("fill", "black")
+			.style("font-size", "10px");
+
+		svg
+			.selectAll(".barValuesFemaleNominees")
+			.data(filteredData)
+			.enter()
+			.append("text")
+			.attr("class", "barValuesFemaleNominees")
+			.attr("x", (d) => pointScale(d.quarter.startYear) + (barWidth / 2 + 40))
+			.attr("y", (d) => yScale(d.femaleWinners + d.femaleNominees) - 5)
+			.style("text-anchor", "middle")
+			.text((d) => (d.femaleNominees !== 0 ? d.femaleNominees : ""))
+			.style("fill", "black")
+			.style("font-size", "10px");
 
 		////////////
 		// LEGEND //
@@ -270,6 +272,7 @@
 			.attr("y", 9)
 			.attr("dy", ".35em")
 			.style("text-anchor", "end")
+			.style("font-size", "10px")
 			.text((d) => d);
 	}
 </script>
