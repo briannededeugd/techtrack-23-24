@@ -70,7 +70,9 @@
 
 	onDestroy(() => {
 		// Cleanup when the component is destroyed
-		observer.disconnect();
+		if (observer) {
+			observer.disconnect();
+		}
 	});
 
 	function handleIntersection(entries) {
