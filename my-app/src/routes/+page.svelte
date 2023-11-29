@@ -16,7 +16,6 @@
 	import PreviousButton from "../components/PreviousButton.svelte";
 	import NextButton from "../components/NextButton.svelte";
 
-	// let src = "/img/female.svg";
 	let currentSlide = 1;
 	let progress = 0;
 
@@ -51,28 +50,46 @@
 		progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
 	}
 
-	afterUpdate(() => {
-		updateProgress();
-	});
+	// Intersection Observer setup
+	let observer;
 
 	onMount(() => {
-		function handleScroll() {
-			const totalSlides = 4;
-			const slider = d3.select("#slider");
-			let scrollPosition = slider.node().scrollLeft;
-			console.log("THE SCROLLPOSITION IS", scrollPosition);
+		const options = {
+			root: null,
+			rootMargin: "0px",
+			threshold: 0.5,
+		};
 
-			// Use clientWidth to get the total width of the slider
-			let slideWidth = slider.node().clientWidth / totalSlides;
+		observer = new IntersectionObserver(handleIntersection, options);
 
-			// Calculate the active slide based on the scroll position
-			let currentSlide = Math.floor(scrollPosition / slideWidth) + 1;
-			let progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
-			console.log("HANDLESCROLL SAYS CURRENTSLIDE IS", currentSlide);
+		// Observe each slide
+		for (let i = 1; i <= 4; i++) {
+			observer.observe(document.getElementById(`slide-${i}`));
 		}
+	});
 
-		const slider = d3.select("#slider");
-		slider.on("scroll", handleScroll);
+	onDestroy(() => {
+		// Cleanup when the component is destroyed
+		observer.disconnect();
+	});
+
+	function handleIntersection(entries) {
+		entries.forEach((entry) => {
+			if (entry.isIntersecting) {
+				// Get the slide number from the entry target
+				const slideNumber = parseInt(entry.target.id.split("-")[1]);
+
+				// Update currentSlide and progress
+				currentSlide = slideNumber;
+				updateProgress();
+				updateHash(currentSlide);
+			}
+		});
+	}
+
+	afterUpdate(() => {
+		// Update progress after each update
+		updateProgress();
 	});
 </script>
 
