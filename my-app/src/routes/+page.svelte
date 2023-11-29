@@ -15,24 +15,32 @@
 	import HomeButton from "../components/HomeButton.svelte";
 	import PreviousButton from "../components/PreviousButton.svelte";
 	import NextButton from "../components/NextButton.svelte";
+	import { slide } from "svelte/transition";
 
 	let currentSlide = 1;
 	let progress = 0;
 
 	function updateHash(slideNumber) {
+		console.log(slideNumber);
 		window.location.hash = `slide-${slideNumber}`;
 	}
 
 	function nextSlide() {
+		// get the nextSlide button ready by defining what comes after the slide we're currently on
 		const nextSlide = document.getElementById(`slide-${currentSlide + 1}`);
-		if (nextSlide) {
-			currentSlide += 1;
-			updateHash(currentSlide);
-			updateProgress();
+
+		// if there's a next slide (max 4) and this function is called, add 1 to the current slide
+		if (nextSlide != null) {
+			//currentSlide += 1;
+			updateHash(currentSlide + 1);
+			//updateProgress();
 		} else {
-			currentSlide = 1;
-			updateHash(currentSlide);
-			updateProgress();
+			// if there's no next slide (aka we've reached the end/slide 4), and user triggers nextSlide, go back to slide 1
+			//currentSlide = 1;
+			//updateHash(currentSlide);
+			updateHash(1);
+			console.log("going home");
+			//updateProgress();
 		}
 	}
 
@@ -52,6 +60,7 @@
 
 	// Intersection Observer setup
 	let observer;
+	var scrolling = false;
 
 	onMount(() => {
 		const options = {
@@ -83,8 +92,13 @@
 
 				// Update currentSlide and progress
 				currentSlide = slideNumber;
+				console.log("observer slide", currentSlide);
 				updateProgress();
-				updateHash(currentSlide);
+
+				let hash = `#slide-${slideNumber}`;
+				if (window.location.hash !== hash) {
+					history.pushState({}, window.DataTransferItemList, hash);
+				}
 			}
 		});
 	}
@@ -129,9 +143,7 @@
 		</section>
 
 		<div class="slider-nav">
-			{#if currentSlide > 1}
-				<PreviousButton onClick={prevSlide} />
-			{/if}
+			<PreviousButton onClick={prevSlide} isFirstSlide={currentSlide === 1} />
 			<section class="progress-bar">
 				<div class="progress" style="width: {progress}%" />
 			</section>
