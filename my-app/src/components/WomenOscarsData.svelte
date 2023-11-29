@@ -2,6 +2,9 @@
 	import { onMount } from "svelte";
 	import * as d3 from "d3";
 
+	////////////////////////////////
+	// VARIABLES + DEFAULT STATES //
+	////////////////////////////////
 	let data = [];
 	let filteredData = [];
 	let selectedCategory = "CINEMATOGRAPHY"; // Default selected category
@@ -13,6 +16,7 @@
 		createBarChart();
 	});
 
+	// Define the data's parameters
 	let categories = ["CINEMATOGRAPHY", "WRITING", "DIRECTING", "FILM EDITING"];
 	let quarters = [
 		{ startYear: 1920, endYear: 1945 },
@@ -21,17 +25,24 @@
 		{ startYear: 1985, endYear: 2020 },
 	];
 
+	/////////////////////////////////////////////////////////////////
+	// FILTER THE DATA BY MALE/FEMALE WINNERS/NOMINEES PER QUARTER //
+	/////////////////////////////////////////////////////////////////
+
+	// Filter the data by Male and Female Nominees and Winners per category per quarter
 	function filterData() {
 		filteredData = [];
+
 		quarters.forEach((quarter) => {
 			let filteredCategoryData = data.filter((item) => {
 				return (
-					parseInt(item.year) >= quarter.startYear &&
-					parseInt(item.year) < quarter.endYear &&
-					item.category === selectedCategory
+					parseInt(item.year) >= quarter.startYear && // Check if the item is later than the quarter's start year
+					parseInt(item.year) < quarter.endYear && // Check if the item is earlier than the quarter's end year
+					item.category === selectedCategory // Check if the item has the selected category
 				);
 			});
 			filteredData.push({
+				// Push that data into a new array with the quarter and for each item the right gender and status
 				quarter,
 				maleNominees: filteredCategoryData.filter(
 					(item) => item.gender === "male" && item.status === "nominated"
@@ -50,41 +61,55 @@
 		createBarChart(); // Update the chart when the category changes
 	}
 
-	function createBarChart() {
-		const tooltip = d3.select("#tooltip");
-		const tooltipContent = d3.select("#tooltipcontent");
+	///////////////////////////
+	// CREATE THE BAR CHART //
+	///////////////////////////
 
+	function createBarChart() {
+		// Set the values in variables
 		const margin = { top: 20, right: 20, bottom: 30, left: 40 };
 		const width = 700 - margin.left - margin.right;
 		const height = 300 - margin.top - margin.bottom;
 
 		const svg = d3
 			.select("#chart-container")
+			.style("z-index", 500)
 			.html("") // Clear existing content
 			.append("svg")
-			.attr("width", width + margin.left + margin.right)
-			.attr("height", height + margin.top + margin.bottom)
+			.attr("width", width + margin.left + margin.right) // Container width includes margins
+			.attr("height", height + margin.top + margin.bottom) // Container height includes margins
 			.append("g")
-			.attr("transform", `translate(${margin.left},${margin.top})`);
+			.attr("transform", `translate(${margin.left},${margin.top})`); // Position the groups inside the chart-container
 
+		/////////////
+		// SCALES //
+		////////////
+
+		// X-axis scale (years as points)
 		const pointScale = d3
 			.scalePoint()
-			.domain(quarters.map((d) => [d.startYear, d.endYear]).flat())
+			.domain(quarters.map((d) => [d.startYear, d.endYear]).flat()) // Use start-year and end-year as separate points on the axis
 			.range([0, width]);
 
+		// Y-axis scale (amount of nominees/winners as points)
 		const yScale = d3
 			.scaleLinear()
 			.domain([
 				0,
-				d3.max(filteredData, (d) =>
-					Math.max(
-						d.maleNominees + d.maleWinners,
-						d.femaleNominees + d.femaleWinners
-					)
+				d3.max(
+					filteredData,
+					(
+						d // Make the max domain dependant on the amount of nominees/winners in the selected category
+					) =>
+						Math.max(
+							d.maleNominees + d.maleWinners,
+							d.femaleNominees + d.femaleWinners
+						)
 				),
 			])
 			.range([height, 0]);
 
+		// Colorscale of the bars to differentiate between men/women and nominees/winners
 		const colorScale = d3
 			.scaleOrdinal()
 			.domain([
@@ -93,14 +118,13 @@
 				"femaleNominees",
 				"femaleWinners",
 			])
-			.range(["#cbdde8", "#99c1cc", "#febaa9", "#f39977"]);
+			.range(["#cbdde8", "#99c1cc", "#febaa9", "#f39977"]); // light-blue to darker-pink
+
+		////////////////////
+		// BARS (STACKED) //
+		////////////////////
 
 		const barWidth = pointScale.step() / 4;
-
-		let maleNomineeAccumulator = 0;
-		let maleWinnerAccumulator = 0;
-		let femaleNomineeAccumulator = 0;
-		let femaleWinnerAccumulator = 0;
 
 		// Male Nominees and Winners stacked
 		svg
@@ -110,16 +134,11 @@
 			.append("rect")
 			.attr("class", "maleBars")
 			.attr("x", (d) => pointScale(d.quarter.startYear))
-			.attr("y", (d) => yScale(maleWinnerAccumulator + d.maleWinners))
+			.attr("y", (d) => yScale(d.maleWinners))
 			.attr("width", barWidth)
+			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.maleWinners))
-			.style("fill", colorScale("maleWinners"))
-			.on("mouseover", function (event, d) {
-				showTooltip(
-					`Male nominees this quarter: ${d.maleNominees}<br>Male winners this quarter: ${d.maleWinners}`
-				);
-			})
-			.on("mouseout", hideTooltip);
+			.style("fill", colorScale("maleWinners"));
 
 		svg
 			.selectAll(".maleBarsNominees")
@@ -128,15 +147,17 @@
 			.append("rect")
 			.attr("class", "maleBarsNominees")
 			.attr("x", (d) => pointScale(d.quarter.startYear))
-			.attr("y", (d) =>
-				yScale(maleWinnerAccumulator + d.maleWinners + d.maleNominees)
-			)
+			.attr("y", (d) => yScale(d.maleWinners + d.maleNominees))
 			.attr("width", barWidth)
+			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.maleNominees))
 			.style("fill", colorScale("maleNominees"))
 			.on("mouseover", function (event, d) {
 				showTooltip(
-					`Male nominees this quarter: ${d.maleNominees}<br>Male winners this quarter: ${d.maleWinners}`
+					event,
+					`Quarter: ${d.quarter.startYear}-${d.quarter.endYear}<br>
+					Male nominees: ${d.maleNominees}<br>
+					Male winners: ${d.maleWinners}`
 				);
 			})
 			.on("mouseout", hideTooltip);
@@ -149,16 +170,11 @@
 			.append("rect")
 			.attr("class", "femaleBars")
 			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth)
-			.attr("y", (d) => yScale(femaleWinnerAccumulator + d.femaleWinners))
+			.attr("y", (d) => yScale(d.femaleWinners))
 			.attr("width", barWidth)
+			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.femaleWinners))
-			.style("fill", colorScale("femaleWinners"))
-			.on("mouseover", function (event, d) {
-				showTooltip(
-					`Female nominees this quarter: ${d.femaleNominees}<br>Female winners this quarter: ${d.femaleWinners}`
-				);
-			})
-			.on("mouseout", hideTooltip);
+			.style("fill", colorScale("femaleWinners"));
 
 		svg
 			.selectAll(".femaleBarsNominees")
@@ -167,26 +183,54 @@
 			.append("rect")
 			.attr("class", "femaleBarsNominees")
 			.attr("x", (d) => pointScale(d.quarter.startYear) + barWidth)
-			.attr("y", (d) =>
-				yScale(femaleWinnerAccumulator + d.femaleWinners + d.femaleNominees)
-			)
+			.attr("y", (d) => yScale(d.femaleWinners + d.femaleNominees))
 			.attr("width", barWidth)
+			.style("cursor", "pointer")
 			.attr("height", (d) => height - yScale(d.femaleNominees))
 			.style("fill", colorScale("femaleNominees"))
 			.on("mouseover", function (event, d) {
 				showTooltip(
-					`Female nominees this quarter: ${d.femaleNominees}<br>Female winners this quarter: ${d.femaleWinners}`
+					event,
+					`Quarter: ${d.quarter.startYear}-${d.quarter.endYear}<br>
+					Female nominees: ${d.femaleNominees}<br>
+					Female winners: ${d.femaleWinners}`
 				);
 			})
 			.on("mouseout", hideTooltip);
 
-		function showTooltip(content) {
-			tooltip.transition().duration(200).style("opacity", 0.9);
-			tooltipContent.html(content);
+		/////////////////////////////////////
+		// SHOW AND HIDE TOOLTIP FUNCTIONS //
+		/////////////////////////////////////
+
+		// Create the defaultstate of the tooltip
+		let tooltip = d3
+			.select("#tooltip")
+			.style("position", "absolute")
+			.attr("class", "tooltip")
+			.style("background-color", "white")
+			.style("border", "solid")
+			.style("border-width", "1px")
+			.style("border-radius", "5px")
+			.style("padding", "5px")
+			.style("width", "max-content")
+			.style("visibility", "hidden");
+
+		tooltip.classed("global-tooltip", true);
+		const tooltipContent = d3.select("#tooltipcontent");
+
+		function showTooltip(event, content) {
+			tooltip
+				.style("visibility", "visible")
+				.style("top", event.clientY - 75 + "px")
+				.style("left", event.clientX + 675 + "px")
+				.style("z-index", 9999)
+				.style("width", "max-content");
+
+			tooltipContent.text(content);
 		}
 
 		function hideTooltip() {
-			tooltip.transition().duration(200).style("opacity", 0);
+			tooltip.style("visibility", "hidden");
 		}
 
 		svg
@@ -195,6 +239,10 @@
 			.call(d3.axisBottom(pointScale));
 
 		svg.append("g").call(d3.axisLeft(yScale));
+
+		////////////
+		// LEGEND //
+		////////////
 
 		const legend = svg
 			.selectAll(".legend")
@@ -224,14 +272,6 @@
 			.style("text-anchor", "end")
 			.text((d) => d);
 	}
-
-	function getStartYear(quarter) {
-		return quarter.startYear;
-	}
-
-	function getEndYear(quarter) {
-		return quarter.endYear;
-	}
 </script>
 
 <div>
@@ -252,8 +292,12 @@
 	<div id="chart-container" />
 </div>
 
+<div id="tooltip">
+	<span id="tooltipcontent" />
+</div>
+
 <style>
-	/* rect {
-		transition: height 0.8s, y 0.8s;
-	} */
+	#tooltip {
+		z-index: 9999 !important;
+	}
 </style>

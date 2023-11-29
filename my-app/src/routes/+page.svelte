@@ -1,6 +1,9 @@
 <script>
 	import { onMount, afterUpdate, onDestroy } from "svelte";
-	import * as d3 from "d3";
+
+	////////////////
+	// COMPONENTS //
+	////////////////
 
 	// PAGES
 	import Introduction from "../components/Introduction.svelte";
@@ -15,7 +18,10 @@
 	import HomeButton from "../components/HomeButton.svelte";
 	import PreviousButton from "../components/PreviousButton.svelte";
 	import NextButton from "../components/NextButton.svelte";
-	import { slide } from "svelte/transition";
+
+	////////////////
+	// NAVIGATION //
+	////////////////
 
 	let currentSlide = 1;
 	let progress = 0;
@@ -26,21 +32,14 @@
 	}
 
 	function nextSlide() {
-		// get the nextSlide button ready by defining what comes after the slide we're currently on
+		// get the nextSlide button ready by defining what comes after the slide we're currently on.
 		const nextSlide = document.getElementById(`slide-${currentSlide + 1}`);
 
-		// if there's a next slide (max 4) and this function is called, add 1 to the current slide
 		if (nextSlide != null) {
-			//currentSlide += 1;
 			updateHash(currentSlide + 1);
-			//updateProgress();
 		} else {
-			// if there's no next slide (aka we've reached the end/slide 4), and user triggers nextSlide, go back to slide 1
-			//currentSlide = 1;
-			//updateHash(currentSlide);
 			updateHash(1);
 			console.log("going home");
-			//updateProgress();
 		}
 	}
 
@@ -58,9 +57,11 @@
 		progress = ((currentSlide - 1) / (totalSlides - 1)) * 100;
 	}
 
-	// Intersection Observer setup
+	///////////////////////////
+	// INTERSECTION OBSERVER //
+	///////////////////////////
+
 	let observer;
-	var scrolling = false;
 
 	onMount(() => {
 		const options = {
@@ -104,7 +105,6 @@
 	}
 
 	afterUpdate(() => {
-		// Update progress after each update
 		updateProgress();
 	});
 </script>
@@ -157,6 +157,10 @@
 </main>
 
 <style>
+	/*///////////////////
+	// GENERAL STYLES ///
+	///////////////////*/
+
 	* {
 		scroll-behavior: smooth !important;
 	}
@@ -165,6 +169,10 @@
 		height: 100%;
 		width: 100vw;
 	}
+
+	/*///////////
+	// SLIDER ///
+	///////////*/
 
 	.slide-content {
 		display: flex;
@@ -178,6 +186,7 @@
 		box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 		border: 1px solid rgba(255, 255, 255, 0.5);
 		backdrop-filter: blur(6.4px);
+		z-index: 1;
 	}
 
 	.slider-wrapper {
@@ -195,7 +204,7 @@
 	}
 
 	#slider {
-		background-image: url("/moviestarsbg.jpeg");
+		background-image: url("/moviestars.jpg");
 		background-size: cover;
 		background-attachment: scroll;
 		display: flex;
@@ -212,8 +221,8 @@
 
 	#slider > section {
 		max-width: 100%;
-		margin: 0 auto;
-		padding: 0 20vw;
+		margin-left: 0;
+		padding: 0 17.5vw;
 		scroll-snap-align: center;
 		height: max-content;
 		width: 80vw;
@@ -234,6 +243,19 @@
 		width: 45vw;
 	}
 
+	.slider-wrapper::-webkit-scrollbar,
+	#slider::-webkit-scrollbar {
+		display: none;
+	}
+
+	#slide-3 {
+		will-change: transform;
+	}
+
+	/*/////////////////
+	// PROGRESS BAR ///
+	/////////////////*/
+
 	.progress-bar {
 		height: 0.5rem;
 		width: 100%;
@@ -246,12 +268,7 @@
 
 	.progress {
 		height: 100%;
-		background: linear-gradient(90deg, #99c1cc, #d39080);
+		background: #fc33a8;
 		transition: all 0.6s ease-in-out;
-	}
-
-	.slider-wrapper::-webkit-scrollbar,
-	#slider::-webkit-scrollbar {
-		display: none;
 	}
 </style>

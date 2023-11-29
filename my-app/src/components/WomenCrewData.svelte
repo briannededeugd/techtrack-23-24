@@ -7,6 +7,10 @@
 
 	onMount(async () => {
 		try {
+			///////////////////////////////////////////
+			// FETCHING DATA AND DATA TRANSFORMATION //
+			//////////////////////////////////////////
+
 			const response = await fetch("/simplified_movies.json");
 			data = await response.json();
 
@@ -17,7 +21,10 @@
 
 			convertYearsToNumbers();
 
-			// Define a function to calculate overall percentage of women in the crew for a quarter
+			///////////////////////////////////////////
+			// CALCULATE OVERALL PERCENTAGE OF WOMEN //
+			///////////////////////////////////////////
+
 			function calculateOverallPercentage(
 				data,
 				startYear,
@@ -73,11 +80,12 @@
 				{ startYear: 1985, endYear: 2020 },
 			];
 
-			// DRAWING SVG VISUALIZATION WITH CODE (D3)
+			////////////////////////////////////////
+			// DRAWING D3 VISUALISATION WITH DATA //
+			////////////////////////////////////////
 
 			// Define an array to store percentageWomen for each quarter
 			const percentageWomenArray = [];
-
 			quarters.forEach((quarter, index) => {
 				const svg = d3.select("#chart");
 
@@ -92,7 +100,7 @@
 				// Push the result into the array
 				percentageWomenArray.push(percentageWomen);
 
-				// x-axis with quarters and their start- and endyear
+				// X-axis with quarters and their start- and endyear seperately, by using flat
 				const pointScale = d3
 					.scalePoint()
 					.domain(quarters.map((d) => [d.startYear, d.endYear]).flat())
@@ -100,9 +108,9 @@
 
 				// Add axis with the years
 				const axisBottom = d3.axisBottom(pointScale);
-
 				d3.select("#axis").call(axisBottom);
 
+				// Create a gradient dependent on the amount of women in the quarter
 				const gradient = svg
 					.append("defs")
 					.append("linearGradient")
@@ -115,17 +123,17 @@
 				gradient
 					.append("stop")
 					.attr("offset", "0%")
-					.style("stop-color", "#99c1cc");
+					.style("stop-color", "#99c1cc"); // blue
 
 				gradient
 					.append("stop")
 					.attr("offset", `${percentageWomenArray[index] * 100}%`)
-					.style("stop-color", "#febaa9");
+					.style("stop-color", "#febaa9"); // pibk
 
 				// Draw circles based on the percentageWomen and x position
 				d3.select("#scale")
 					.selectAll("g")
-					.data(percentageWomenArray) // Use the entire array
+					.data(percentageWomenArray)
 					.join("g")
 					.attr("class", "bubble-group")
 					.each(function (d, i) {
@@ -147,6 +155,7 @@
 							.on("mouseout", handleMouseOut);
 					});
 
+				// Create the defaultstate of the tooltip
 				let tooltip = d3
 					.select("#tooltip")
 					.style("visibility", "hidden")
@@ -160,6 +169,7 @@
 					.style("width", "max-content")
 					.style("z-index", 1000);
 
+				// Have tooltip show up when an element is being hovered, with the relevant data being displayed
 				function handleMouseOver(event, d) {
 					const circle = d3.select(event.currentTarget);
 					circle.transition().attr("r", d * 10); // Increase the radius on hover
@@ -184,13 +194,10 @@
 					);
 				}
 
+				// Have tooltip disappear when the user is no longer hovering
 				function handleMouseOut(event, d) {
 					const circle = d3.select(event.currentTarget);
 					circle.transition().attr("r", d * 8); // Restore the original radius on mouseout
-
-					const image = d3.select(".circle-image"); // Use the class to select the image
-
-					image.style("opacity", 0);
 
 					tooltip.style("visibility", "hidden");
 
