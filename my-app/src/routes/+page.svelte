@@ -162,7 +162,7 @@
 	}
 
 	#slider {
-		background-image: url("/moviestars.png");
+		background-image: url("/moviestarsbg.jpeg");
 		background-size: cover;
 		background-attachment: scroll;
 		display: flex;
