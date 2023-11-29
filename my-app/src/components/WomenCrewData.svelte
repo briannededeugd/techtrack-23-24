@@ -122,15 +122,16 @@
 						// Remove existing elements within the group
 						group.selectAll("*").remove();
 
-						// Append a single circle element to the group
 						group
-							.append("circle")
-							.attr("r", d * 8) // Use the value from the array
-							.attr("class", "bubble")
-							.attr("cx", pointScale(quarters[i].startYear) + d * 8)
-							.attr("fill", "#cbdde8")
+							.append("image")
+							.attr("xlink:href", "female.svg")
+							.attr("width", d * 16) // Use the value from the array to set the width of the image
+							.attr("height", d * 16) // Use the value from the array to set the height of the image
+							.attr("x", pointScale(quarters[i].startYear))
+							.attr("y", -d * 8) // Adjust the y position to center the icon vertically
 							.style("cursor", "pointer")
 							.style("z-index", 1)
+							.style("fill", "#cbdde8") // Default blue color
 							.on("mouseover", handleMouseOver)
 							.on("mouseout", handleMouseOut);
 					});
@@ -151,11 +152,12 @@
 
 				// Have tooltip show up when an element is being hovered, with the relevant data being displayed
 				function handleMouseOver(event, d) {
-					const circle = d3.select(event.currentTarget);
-					circle
+					const image = d3.select(event.currentTarget);
+					image
 						.transition()
-						.attr("r", d * 10)
-						.style("fill", "#fc33a8"); // Increase the radius on hover
+						.attr("xlink:href", "pinkfemale.svg")
+						.attr("width", d * 19)
+						.attr("height", d * 19);
 
 					tooltip
 						.style("visibility", "visible")
@@ -179,11 +181,12 @@
 
 				// Have tooltip disappear when the user is no longer hovering
 				function handleMouseOut(event, d) {
-					const circle = d3.select(event.currentTarget);
-					circle
+					const image = d3.select(event.currentTarget);
+					image
 						.transition()
-						.attr("r", d * 8)
-						.style("fill", "#cbdde8"); // Restore the original radius on mouseout
+						.attr("xlink:href", "female.svg")
+						.attr("width", d * 16)
+						.attr("height", d * 16); // Change to pink color on hover
 
 					tooltip.style("visibility", "hidden");
 
