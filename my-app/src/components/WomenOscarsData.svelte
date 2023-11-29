@@ -190,6 +190,8 @@
 		////////////////
 		// BAR VALUES //
 		////////////////
+
+		// Bar values male bars
 		svg
 			.selectAll(".barValues")
 			.data(filteredData)
@@ -216,6 +218,7 @@
 			.style("fill", "black")
 			.style("font-size", "10px");
 
+		// Bar values female bars
 		svg
 			.selectAll(".barValuesFemale")
 			.data(filteredData)
