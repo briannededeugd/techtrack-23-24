@@ -1,6 +1,6 @@
 Welcome to my project for the Tech Track of the minor Information Design, "Female Representation in Cinema", an interactive data visualisation telling the story of women in film during the past 100 years.
 
-<img width="1440" alt="Screenshot 2023-11-28 at 20 46 46" src="https://github.com/briannededeugd/techtrack-23-24/assets/92082302/4e061a08-f55a-4add-be96-3019786b7023">
+<img width="1440" alt="Screenshot 2023-11-30 at 01 03 47" src="https://github.com/briannededeugd/techtrack-23-24/assets/92082302/6922b324-1497-49a2-beda-e17407542bf1">
 
 ### How to get to _Female Representation in Cinema_
 You're lucky! [My data visualisation site is up and running via Vercel](https://techtrack-2324.vercel.app/). If you'd rather run it on localhost, there's a few things you've got to do:
