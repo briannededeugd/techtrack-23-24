@@ -172,9 +172,9 @@
 					);
 
 					console.log(
-						"Er wordt gehovered op y-coordinaat",
+						"We're hovering on Y-coordinate",
 						event.clientY,
-						"en x-coordinaat",
+						"and x-coordinate",
 						event.clientX
 					);
 				}
@@ -190,7 +190,7 @@
 
 					tooltip.style("visibility", "hidden");
 
-					console.log("Er wordt niet meer gehoverd");
+					console.log("We're no longer hovering");
 				}
 			});
 
