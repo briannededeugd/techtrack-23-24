@@ -285,7 +285,7 @@
 		{#each categories as category}
 			<!-- Iterate over the categories array, assign 'category' to each item that's being iterated over -->
 			<label>
-				<!-- value becomes the category in question, the group of radio buttons is binded to selectedCategory, so that when one is clicked it updates accordingly -->
+				<!-- value becomes the category in question the group of radio buttons is binded to selectedCategory, so that when one is clicked it updates accordingly -->
 				<input
 					type="radio"
 					bind:group={selectedCategory}
@@ -300,3 +300,27 @@
 
 	<div id="chart-container" />
 </div>
+
+<style>
+	input[type="radio"] {
+		appearance: none;
+		-webkit-appearance: none;
+		-moz-appearance: none;
+		width: 16px;
+		height: 16px;
+		border-radius: 50%;
+		border: 1px solid black;
+		outline: none;
+		cursor: pointer;
+		transition: background-color 0.3s;
+	}
+
+	input[type="radio"]:checked {
+		background-color: #fc33a8;
+		border-color: black;
+	}
+
+	input[type="radio"]:hover:not(:checked) {
+		background-color: #cbdde8;
+	}
+</style>
