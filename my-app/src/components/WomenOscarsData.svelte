@@ -20,9 +20,9 @@
 	let categories = ["CINEMATOGRAPHY", "WRITING", "DIRECTING", "FILM EDITING"];
 	let quarters = [
 		{ startYear: 1920, endYear: 1945 },
-		{ startYear: 1945, endYear: 1960 },
-		{ startYear: 1960, endYear: 1985 },
-		{ startYear: 1985, endYear: 2020 },
+		{ startYear: 1945, endYear: 1970 },
+		{ startYear: 1970, endYear: 1995 },
+		{ startYear: 1995, endYear: 2020 },
 	];
 
 	/////////////////////////////////////////////////////////////////
