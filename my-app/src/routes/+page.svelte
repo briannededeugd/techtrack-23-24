@@ -63,13 +63,18 @@
 
 	let observer;
 
+	// We initialize an IntersectionObserver named observer with specific options.
+	// This observer will watch for intersections between the observed elements and
+	// a specified root (in this case, null means the viewport).
+
 	onMount(() => {
 		const options = {
-			root: null,
-			rootMargin: "0px",
-			threshold: 0.5,
+			root: null, // the viewport
+			rootMargin: "0px", // margin around the root
+			threshold: 0.5, // when at least 50% of the observed element is visible, the intersection callback will be triggered
 		};
 
+		// We call on the handleIntersection function to observe each slide
 		observer = new IntersectionObserver(handleIntersection, options);
 
 		// Observe each slide
@@ -79,7 +84,7 @@
 	});
 
 	onDestroy(() => {
-		// Cleanup when the component is destroyed
+		// Cleanup when the component is destroyed (prevent memory leaks)
 		if (observer) {
 			observer.disconnect();
 		}
@@ -88,10 +93,11 @@
 	function handleIntersection(entries) {
 		entries.forEach((entry) => {
 			if (entry.isIntersecting) {
-				// Get the slide number from the entry target
-				const slideNumber = parseInt(entry.target.id.split("-")[1]);
+				// Check whether the observed element is currently intersecting with the viewport
+				const slideNumber = parseInt(entry.target.id.split("-")[1]); // Get the slide number from the entry target
 
-				// Update currentSlide and progress
+				// If it is intersecting, it extracts the slide number from the element's ID, updates the slide number (currentSlide),
+				// logs information, updates progress, and modifies the URL hash.
 				currentSlide = slideNumber;
 				console.log("observer slide", currentSlide);
 				updateProgress();
