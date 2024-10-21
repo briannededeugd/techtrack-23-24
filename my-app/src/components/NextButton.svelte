@@ -14,7 +14,7 @@
 	:root {
 		--bg: #f3f8fa;
 		--white: #f7f2f1;
-		--buttonbg: #121212;
+		--buttonbg: #fc33a8;
 		transition: all 0.45s cubic-bezier(0.65, 0, 0.076, 1);
 	}
 
@@ -80,6 +80,7 @@
 		padding: 0;
 		display: none;
 		color: var(--white);
+		transition-delay: .25s;
 	}
 
 	.next {
